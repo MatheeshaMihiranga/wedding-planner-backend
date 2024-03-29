@@ -15,7 +15,7 @@ const userUpdateValidation = object({
 });
 
 const userLoginValidation = object({
-  email: string().email(),
+  email: string(),
   password: string().required(),
 });
 

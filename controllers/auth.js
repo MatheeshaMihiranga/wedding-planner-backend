@@ -13,14 +13,17 @@ const { registerSupplier } = require("./supplier");
 exports.userProfile = async (req, res, next) => {
   try {
     const user = getCurrentUser(req);
-   var userId = user.id;
-    const userProfileDetails = await userModal.findOne({ _id: userId });
+    var userId = user.id;
+    const userProfileDetails = await userModal
+      .findOne({ _id: userId })
+      .populate("supplierId")
+      .populate({ path: "supplierId", populate: [{ path: "packageId" }] });
     if (userProfileDetails) {
       return res.json({
         success: true,
         data: userProfileDetails,
       });
-    }else{
+    } else {
       throw new Error("User not available");
     }
   } catch (error) {
@@ -30,12 +33,15 @@ exports.userProfile = async (req, res, next) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
- await userLoginValidation.validate(req.body);
+    await userLoginValidation.validate(req.body);
     const { email, password } = req.body;
     const findUserData = await userModal.findOne({ email: email });
 
     if (findUserData) {
-      const passwordEncrypt = await bcrypt.compare(password, findUserData.password);
+      const passwordEncrypt = await bcrypt.compare(
+        password,
+        findUserData.password
+      );
       if (passwordEncrypt) {
         const payload = {
           id: findUserData.id,
@@ -79,6 +85,13 @@ const saveUser = async (data) => {
   return user.save();
 };
 
+const updateUserData = async (userId, data) => {
+  const updateUser = await userModal.findByIdAndUpdate({ _id: userId }, data, {
+    new: true,
+  });
+  return updateUser;
+};
+
 exports.signUp = async (req, res, next) => {
   const { email } = req.body;
   try {
@@ -90,7 +103,10 @@ exports.signUp = async (req, res, next) => {
     if (checkUserIsAvailable) return res.send("User has already registered");
     const userData = await saveUser(req.body);
     if (userData.role == Roles.suppliers) {
-      await registerSupplier(userData);
+      let supplierData = await registerSupplier(userData);
+      await updateUserData(userData._id, {
+        supplierId: supplierData._id,
+      });
       res.json({
         success: true,
         data: userData,
@@ -110,13 +126,7 @@ exports.updateUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
     await userUpdateValidation.validate(req.body);
-    const updateUser = await userModal.findByIdAndUpdate(
-      { _id: userId },
-      req.body,
-      {
-        new: true,
-      }
-    );
+    const updateUser = await updateUserData(userId, req.body);
     return res.json({
       success: true,
       data: updateUser,

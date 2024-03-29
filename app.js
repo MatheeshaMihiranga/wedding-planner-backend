@@ -10,6 +10,8 @@ require('dotenv').config()
 
 connectDB()
 const app = express()
+app.use(passport.initialize())
+require('./passport/passportJWT')(passport)
 
 app.use(cors())
 
@@ -21,6 +23,7 @@ app.use(multer({
     }}).single('file'))
 
 app.use(routes)
+
 
 app.use(error.error)
 

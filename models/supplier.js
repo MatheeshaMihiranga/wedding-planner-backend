@@ -1,8 +1,36 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
+const packagesModal = new schema({
+  packageName: {
+      type: String,
+      require: true,
+      default: "",
+    },
+    hallName: {
+      type: String,
+      require: false,
+      default: "",
+    },
+    maxCount: {
+      type: String,
+      require: false,
+      default: "",
+    },
+    price: {
+      type: String,
+      require: false,
+      default: "",
+    },
+    packageDescription: {
+      type: String,
+      require: false,
+      default: "",
+    },
+})
+
 const supplierModel = new schema({
-  serviceName: {
+  supplierName: {
     type: String,
     require: true,
     default: "",
@@ -27,19 +55,34 @@ const supplierModel = new schema({
     require: false,
     default: "",
   },
-  packages: {
-    type: Array,
+  packageId: {
+    type: String,
     require: false,
-    default: [],
+    ref: 'Packages'
   },
   userId: {
     type: String,
-    ref: 'Users'
+    ref: "Users",
+  },
+  rating: {
+    type: Number,
+    require: false,
+    default: 0,
   },
   images: {
     type: Array,
     require: false,
     default: [],
+  },
+  unavailableDates:{
+    type: Array,
+    require: false,
+    default: [],
+  },
+  status: {
+    type: Boolean,
+    require: false,
+    default: true,
   },
 });
 

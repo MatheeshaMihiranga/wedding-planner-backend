@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get("/getAll", authorize(Roles.All), supplier.getAllSuppliers);
 router.put("/update/:id", authorize(Roles.All), supplier.updateSupplierData);
+router.get("/getSupplier/:id", authorize(Roles.All), supplier.getSupplierById);
 
 module.exports = router;
