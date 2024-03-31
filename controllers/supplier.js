@@ -80,15 +80,30 @@ exports.getSupplierById = async (req, res, next) => {
 exports.searchSupplier = async (req, res, next) => {
   try {
     const { type, date, location, rating, maxCount } = req.body;
-    const supplierData = await supplierModel.aggregate([
-      { $match: { categoryType: { $eq: type } } },
+
+    const checkDateInArray = [
       {
         $match: {
-          $expr: {
-            $or: [{ $ne: [date, null] }, { $ne: ["$unavailableDates", date] }],
+          unavailableDates: {
+            $nin: [date],
           },
         },
       },
+    ];
+
+    const skipCheckDateInArray = [
+      {
+        $match: {
+          $expr: {
+            $or: [{ $eq: [date, null] }],
+          },
+        },
+      },
+    ];
+
+    const supplierData = await supplierModel.aggregate([
+      { $match: { categoryType: { $eq: type } } },
+      ...(date ? checkDateInArray : skipCheckDateInArray),
       {
         $match: {
           $expr: {
@@ -120,16 +135,31 @@ exports.searchSupplier = async (req, res, next) => {
         },
       },
       {
-        $unwind: "$packagesData" 
+        $unwind: "$packagesData",
       },
       {
-        $unwind: "$packagesData.packages"
+        $unwind: "$packagesData.packages",
       },
       {
         $match: {
           $expr: {
-            $or: [{ $eq: [maxCount, null] }, { $eq: ["$packagesData.packages.maxCount", maxCount] }],
+            $or: [
+              { $eq: [maxCount, null] },
+              { $eq: ["$packagesData.packages.maxCount", maxCount] },
+            ],
           },
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          supplierName: { $first: "$supplierName" }, // Keep the supplierName
+          location: { $first: "$location" },
+          images: { $first: "$images" },
+          webLink: { $first: "$webLink" },
+          rating: { $first: "$rating" },
+          unavailableDates: { $first: "$unavailableDates" },
+          packages:{$push:"$packagesData"}
         },
       },
     ]);
