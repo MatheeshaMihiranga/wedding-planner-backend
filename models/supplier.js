@@ -1,34 +1,6 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
-const packagesModal = new schema({
-  packageName: {
-      type: String,
-      require: true,
-      default: "",
-    },
-    hallName: {
-      type: String,
-      require: false,
-      default: "",
-    },
-    maxCount: {
-      type: String,
-      require: false,
-      default: "",
-    },
-    price: {
-      type: String,
-      require: false,
-      default: "",
-    },
-    packageDescription: {
-      type: String,
-      require: false,
-      default: "",
-    },
-})
-
 const supplierModel = new schema({
   supplierName: {
     type: String,
@@ -58,11 +30,20 @@ const supplierModel = new schema({
   packageId: {
     type: String,
     require: false,
-    ref: 'Packages'
+    ref: "Packages",
+  },
+  reviewId: {
+    type: String,
+    require: false,
+    ref: "Reviews",
   },
   userId: {
     type: String,
     ref: "Users",
+  },
+  enquireId: {
+    type: String,
+    ref: "Enquires",
   },
   rating: {
     type: Number,
@@ -74,7 +55,7 @@ const supplierModel = new schema({
     require: false,
     default: [],
   },
-  unavailableDates:{
+  unavailableDates: {
     type: Array,
     require: false,
     default: [],

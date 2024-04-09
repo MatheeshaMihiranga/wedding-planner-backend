@@ -1,13 +1,16 @@
 const { Mongoose } = require("mongoose");
 const packagesModal = require("../models/packages");
+const reviewModel = require("../models/review");
+const enquireModel = require("../models/enquire");
+
 const { ObjectId } = require("mongodb");
 
 exports.registerPackages = async (user) => {
   try {
-    const supplier = new packagesModal({
+    const package = new packagesModal({
       supplierId: user?._id || "",
     });
-    return supplier.save();
+    return package.save();
   } catch (error) {
     throw new Error(error.message);
   }

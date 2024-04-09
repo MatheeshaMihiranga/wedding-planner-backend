@@ -1,40 +1,40 @@
 const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
-const packagesDetailsModal = new schema({
-  packageName: {
+const reviewDetailsModel = new schema({
+  userId: {
     type: String,
     require: true,
     default: "",
   },
-  hallName: {
-    type: String,
-    require: false,
-    default: null,
-  },
-  maxCount: {
-    type: Number,
-    require: false,
-    default: null,
-  },
-  price: {
-    type: Number,
-    require: false,
-    default: 0,
-  },
-  packageDescription: {
+  userName: {
     type: String,
     require: false,
     default: "",
   },
+  userReview: {
+    type: String,
+    require: false,
+    default: null,
+  },
+  supplierReview: {
+    type: String,
+    require: false,
+    default: null,
+  },
+  reviewCount: {
+    type: Number,
+    require: false,
+    default: 0,
+  },
 });
 
-const packagesModel = new schema({
+const reviewsModel = new schema({
   supplierId: {
     type: String,
     ref: "Suppliers",
   },
-  packages: [packagesDetailsModal],
+  reviews: [reviewDetailsModel],
 });
 
-module.exports = mongoose.model("Packages", packagesModel);
+module.exports = mongoose.model("Reviews", reviewsModel);

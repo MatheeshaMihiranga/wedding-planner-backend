@@ -3,6 +3,8 @@ const supplierModel = require("../models/supplier");
 const { supplierUpdateValidation } = require("../validation/supplier");
 const { ObjectId } = require("mongodb");
 const { registerPackages } = require("./packages");
+const { registerReviews } = require("./reviews");
+const { registerEnquires } = require("./enquires");
 
 const updateSupplierDetails = async (userId, body) => {
   const updateUser = await supplierModel
@@ -20,10 +22,15 @@ exports.registerSupplier = async (user) => {
     });
     const getSupplierData = await supplier.save();
     const getPackageData = await registerPackages(getSupplierData);
+    const reviewData = await registerReviews(getSupplierData);
+    const enquireData = await registerEnquires(getSupplierData);
     const updateSupplierData = await updateSupplierDetails(
       getSupplierData?._id,
       {
+        supplierName:user.name,
         packageId: getPackageData._id,
+        reviewId:reviewData._id,
+        enquireId:enquireData._id
       }
     );
     return updateSupplierData;
@@ -64,7 +71,7 @@ exports.getSupplierById = async (req, res, next) => {
     if (supplierId) {
       const supplierData = await supplierModel
         .findOne({ _id: supplierId })
-        .populate("packageId")
+        .populate("packageId").populate("reviewId").populate("enquireId")
         .exec();
 
       res.json({
