@@ -17,6 +17,21 @@ const supplierModel = new schema({
     require: false,
     default: "",
   },
+  contactEmail: {
+    type: String,
+    require: false,
+    default: "",
+  },
+  contactUserName: {
+    type: String,
+    require: false,
+    default: "",
+  },
+  description: {
+    type: String,
+    require: false,
+    default: "",
+  },
   categoryType: {
     type: String,
     require: false,

@@ -11,6 +11,8 @@ const supplierUpdateValidation = object({
   images: array(),
   rating:number(),
   unavailableDates:array(),
+  contactEmail:string(),
+  contactUserName:string(),
 });
 
 module.exports = {

@@ -111,6 +111,33 @@ exports.getSupplierListByUserId = async (req, res, next) => {
           },
         },
       },
+      { $unwind: "$enquires" },
+      {
+        $group: {
+          _id: "$_id",
+          supplierId: { $first: "$supplierId" },
+          supplierData: { $first: "$supplierData" },
+          enquires: {
+            $push: {
+              userId: "$enquires.userId",
+              date: "$enquires.date",
+              status: "$enquires.status",
+              _id: "$enquires._id",
+              supplierData: "$supplierData",
+            },
+          },
+        },
+      },
+      { $unwind: "$enquires" },
+      {
+        $project: {
+          _id: "$enquires._id",
+          userId: "$enquires.userId",
+          date: "$enquires.date",
+          status: "$enquires.status",
+          supplierData: "$enquires.supplierData",
+        },
+      },
     ]);
     return res.json({
       success: true,
