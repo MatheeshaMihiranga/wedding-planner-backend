@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post("/createEnquire/:id", authorize(Roles.All), enquires.createEnquires);
 router.put("/updateEnquire/:id/:enquireId", authorize(Roles.All), enquires.updateEnquire);
+router.get("/getAllEnquireBySupplierId/:id", authorize(Roles.All), enquires.getAllEnquireBySupplier);
 
 module.exports = router;

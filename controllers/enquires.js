@@ -13,6 +13,22 @@ exports.registerEnquires = async (user) => {
   }
 };
 
+exports.getAllEnquireBySupplier = async (req, res, next) => {
+  try {
+    const supplierId = req.params.id;
+    let getReviewData = await enquireModel.findOne({supplierId:supplierId})
+    return res.json({
+      success: true,
+      data: getReviewData,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      data: error.message,
+    });
+  }
+};
+
 exports.createEnquires = async (req, res, next) => {
     try {
       const enquireId = req.params.id;
