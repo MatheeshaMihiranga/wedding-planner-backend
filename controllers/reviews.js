@@ -1,5 +1,15 @@
 const { Mongoose } = require("mongoose");
 const reviewModel = require("../models/review");
+const { updateSupplierData } = require("./supplier");
+const supplierModel = require("../models/supplier");
+
+const updateSupplierRating = async (userId, body) => {
+  const updateUser = await supplierModel
+    .findByIdAndUpdate(userId, body, {
+      new: true,
+    })
+  return updateUser;
+};
 
 exports.registerReviews = async (user) => {
   try {
@@ -18,7 +28,7 @@ exports.registerReviews = async (user) => {
 exports.getAllReviewBySupplier = async (req, res, next) => {
   try {
     const supplierId = req.params.id;
-    let getReviewData = await reviewModel.findOne({supplierId:supplierId})
+    let getReviewData = await reviewModel.findOne({ supplierId: supplierId });
     return res.json({
       success: true,
       data: getReviewData,
@@ -33,10 +43,24 @@ exports.getAllReviewBySupplier = async (req, res, next) => {
 
 exports.createReviews = async (req, res, next) => {
   try {
+    const supplierId = req.params.supplierId;
     const reviewId = req.params.id;
     let getReviewData = await reviewModel.findById(reviewId);
     getReviewData.reviews.push(req.body);
     const getReviewDetails = await getReviewData.save();
+    const getReviewCount = getReviewData.reviews.length;
+    const getReviewResultCount = getReviewData.reviews.reduce(
+      (result, data) => {
+        return (result += data.reviewCount);
+      },
+      0
+    );
+    const getSummaryOfReviewCount = Math.trunc(
+      getReviewResultCount / getReviewCount
+    );
+    await updateSupplierRating(supplierId, {
+      rating: getSummaryOfReviewCount,
+    });
     return res.json({
       success: true,
       data: getReviewDetails,

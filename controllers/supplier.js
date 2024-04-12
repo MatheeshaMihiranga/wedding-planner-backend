@@ -6,7 +6,7 @@ const { registerPackages } = require("./packages");
 const { registerReviews } = require("./reviews");
 const { registerEnquires } = require("./enquires");
 
-const updateSupplierDetails = async (userId, body) => {
+updateSupplierDetails = async (userId, body) => {
   const updateUser = await supplierModel
     .findByIdAndUpdate(userId, body, {
       new: true,
