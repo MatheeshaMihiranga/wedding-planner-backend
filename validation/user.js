@@ -1,4 +1,4 @@
-const { object, string} = require("yup");
+const { object, string,number} = require("yup");
 
 const userRegisterValidation = object({
   name: string().required(),
@@ -6,6 +6,8 @@ const userRegisterValidation = object({
   password: string().required(),
   confirmPassword: string().required(),
   role: string().default(() => "user"),
+  eventDate:string(),
+  budget:number()
 });
 
 const userUpdateValidation = object({

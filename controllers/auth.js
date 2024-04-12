@@ -9,6 +9,9 @@ const {
 } = require("../validation/user");
 const { getCurrentUser, Roles } = require("../middleware/auth");
 const { registerSupplier } = require("./supplier");
+const { registerCheckList } = require("./checkList");
+const { registerBudget } = require("./budget");
+const { registerGuest } = require("./guest");
 
 exports.userProfile = async (req, res, next) => {
   try {
@@ -17,7 +20,14 @@ exports.userProfile = async (req, res, next) => {
     const userProfileDetails = await userModal
       .findOne({ _id: userId })
       .populate("supplierId")
-      .populate({ path: "supplierId", populate: [{ path: "packageId" },{ path: "reviewId" },{ path: "enquireId" }]});
+      .populate({
+        path: "supplierId",
+        populate: [
+          { path: "packageId" },
+          { path: "reviewId" },
+          { path: "enquireId" },
+        ],
+      });
     if (userProfileDetails) {
       return res.json({
         success: true,
@@ -32,7 +42,7 @@ exports.userProfile = async (req, res, next) => {
   } catch (error) {
     return res.json({
       success: false,
-      data: error.message
+      data: error.message,
     });
   }
 };
@@ -80,19 +90,21 @@ exports.postLogin = async (req, res, next) => {
   } catch (error) {
     return res.json({
       success: false,
-      data: error.message
+      data: error.message,
     });
   }
 };
 
 const saveUser = async (data) => {
-  const { name, email, password, role } = data;
+  const { name, email, password, role,eventDate,budget } = data;
   const getPassword = await bcrypt.hash(password, 12);
   const user = new userModal({
     name: name,
     email: email,
     password: getPassword,
     role: role,
+    eventDate:eventDate,
+    budget:budget
   });
   return user.save();
 };
@@ -124,6 +136,14 @@ exports.signUp = async (req, res, next) => {
         data: userData,
       });
     } else {
+      let checkListData = await registerCheckList(userData);
+      let budgetData = await registerBudget(userData);
+      let guestData = await registerGuest(userData);
+      await updateUserData(userData._id, {
+        checkListId: checkListData._id,
+        budgetId: budgetData._id,
+        guestId: guestData._id,
+      });
       res.json({
         success: true,
         data: userData,
@@ -132,7 +152,7 @@ exports.signUp = async (req, res, next) => {
   } catch (error) {
     return res.json({
       success: false,
-      data: error.message
+      data: error.message,
     });
   }
 };
@@ -149,7 +169,7 @@ exports.updateUser = async (req, res, next) => {
   } catch (error) {
     return res.json({
       success: false,
-      data: error.message
+      data: error.message,
     });
   }
 };
