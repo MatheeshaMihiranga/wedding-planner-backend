@@ -73,7 +73,6 @@ exports.getSupplierById = async (req, res, next) => {
         .findOne({ _id: supplierId })
         .populate("packageId").populate("reviewId").populate("enquireId")
         .exec();
-
       res.json({
         success: true,
         data: supplierData,

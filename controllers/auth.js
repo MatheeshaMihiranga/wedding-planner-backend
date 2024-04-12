@@ -17,17 +17,23 @@ exports.userProfile = async (req, res, next) => {
     const userProfileDetails = await userModal
       .findOne({ _id: userId })
       .populate("supplierId")
-      .populate({ path: "supplierId", populate: [{ path: "packageId" }] });
+      .populate({ path: "supplierId", populate: [{ path: "packageId" },{ path: "reviewId" },{ path: "enquireId" }]});
     if (userProfileDetails) {
       return res.json({
         success: true,
         data: userProfileDetails,
       });
     } else {
-      throw new Error("User not available");
+      return res.json({
+        success: false,
+        data: "User not available",
+      });
     }
   } catch (error) {
-    throw new Error(error.message);
+    return res.json({
+      success: false,
+      data: error.message
+    });
   }
 };
 
@@ -67,9 +73,15 @@ exports.postLogin = async (req, res, next) => {
         );
       }
     }
-    throw new Error("User not available");
+    return res.json({
+      success: false,
+      data: "Something went wrong",
+    });
   } catch (error) {
-    throw new Error(error.message);
+    return res.json({
+      success: false,
+      data: error.message
+    });
   }
 };
 
@@ -118,7 +130,10 @@ exports.signUp = async (req, res, next) => {
       });
     }
   } catch (error) {
-    throw new Error(error.message);
+    return res.json({
+      success: false,
+      data: error.message
+    });
   }
 };
 
@@ -132,6 +147,9 @@ exports.updateUser = async (req, res, next) => {
       data: updateUser,
     });
   } catch (error) {
-    throw new Error(error.message);
+    return res.json({
+      success: false,
+      data: error.message
+    });
   }
 };
