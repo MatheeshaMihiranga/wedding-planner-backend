@@ -13,7 +13,7 @@ const checkListDetailsModel = new schema({
     default: "",
   },
   status: {
-    type: String,
+    type: Boolean,
     require: false,
     default: false,
   },
