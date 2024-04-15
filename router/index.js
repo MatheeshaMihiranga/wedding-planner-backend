@@ -6,6 +6,7 @@ const reviews = require("./reviews");
 const enquire = require("./enquire");
 const checkList = require("./checkList");
 const budget = require("./budget");
+const guest = require("./guest");
 
 const router = express.Router();
 
@@ -16,5 +17,6 @@ router.use("/review", reviews);
 router.use("/enquire", enquire);
 router.use("/checkList", checkList);
 router.use("/budget", budget);
+router.use("/guest", guest);
 
 module.exports = router;

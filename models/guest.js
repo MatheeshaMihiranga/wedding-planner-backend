@@ -15,7 +15,7 @@ const guestDetails = new schema({
   status: {
     type: String,
     require: false,
-    default: "awaiting",
+    default: "Awaiting",
   },
 });
 
