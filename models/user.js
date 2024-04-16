@@ -15,6 +15,21 @@ const userModal = new schema({
     type: String,
     require: true,
   },
+  brideName: {
+    type: String,
+    require: false,
+    default:""
+  },
+  imageUrl:{
+    type: String,
+    require: false,
+    default:""
+  },
+  groomName: {
+    type: String,
+    require: false,
+    default:""
+  },
   description: {
     type: String,
     require: false,

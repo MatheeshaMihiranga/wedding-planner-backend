@@ -2,6 +2,10 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const userModal = require("../models/user");
+const checkList = require("../models/checkList");
+const guest = require("../models/guest");
+const budget = require("../models/budget");
+
 const {
   userRegisterValidation,
   userLoginValidation,
@@ -159,6 +163,24 @@ exports.updateUser = async (req, res, next) => {
     return res.json({
       success: true,
       data: updateUser,
+    });
+  } catch (error) {
+    return res.json({
+      success: false,
+      data: error.message,
+    });
+  }
+};
+
+exports.userDelete = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    await userModal.findOneAndDelete({_id:userId})
+    await checkList.findOneAndDelete({userId:userId})
+    await guest.findOneAndDelete({userId:userId})
+    await budget.findOneAndDelete({userId:userId})
+    return res.json({
+      success: true
     });
   } catch (error) {
     return res.json({
