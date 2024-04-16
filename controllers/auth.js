@@ -72,9 +72,9 @@ exports.postLogin = async (req, res, next) => {
           },
           (err, token) => {
             if (err) {
-              throw new Error("Something went wrong");
+              return res.status(500).json({ error: 'Password or Email incorrect' });
             } else {
-              res.json({
+              return res.json({
                 success: true,
                 token: `Bearer ${token}`,
               });
@@ -83,15 +83,9 @@ exports.postLogin = async (req, res, next) => {
         );
       }
     }
-    return res.json({
-      success: false,
-      data: "Something went wrong",
-    });
+    return res.status(500).json({ error: 'Password or Email incorrect' });
   } catch (error) {
-    return res.json({
-      success: false,
-      data: error.message,
-    });
+    return res.status(500).json({ error: 'Something went wrong' });
   }
 };
 
