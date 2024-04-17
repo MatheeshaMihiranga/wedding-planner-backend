@@ -16,11 +16,6 @@ require('./passport/passportJWT')(passport)
 app.use(cors())
 
 app.use(bodyPharser.json())
-app.use(multer({
-    storage: multer.memoryStorage(),
-    limits: {
-      fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
-    }}).single('file'))
 
 app.use(routes)
 

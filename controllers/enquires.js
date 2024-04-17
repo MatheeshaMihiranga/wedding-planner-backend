@@ -47,6 +47,23 @@ exports.createEnquires = async (req, res, next) => {
   }
 };
 
+exports.deleteEnquiry = async (req, res, next) => {
+  try {
+    const parentId = req.params.id;
+    const enquiresId = req.params.enquiresId;
+    let dataView =  await enquireModel.updateOne(
+      { _id: ObjectId(parentId) },
+      { $pull: { enquires: { _id: { $eq: ObjectId(enquiresId) } } } }
+  );
+    return res.json({
+      success: true,
+      data: dataView,
+    });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 exports.updateEnquire = async (req, res, next) => {
   try {
     const parentId = req.params.id;
